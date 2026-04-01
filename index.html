@@ -41,21 +41,5 @@ box-shadow:0 10px 30px rgba(0,0,0,0.15);
 
 </div>
 
-<script>
-let count = localStorage.getItem("visitCount");
-
-if(!count){
-count = 1;
-}else{
-count = Number(count) + 1;
-}
-
-localStorage.setItem("visitCount",count);
-
-document.getElementById("counter").innerText =
-"この端末でのアクセス回数：" + count;
-
-</script>
-
 </body>
 </html>
