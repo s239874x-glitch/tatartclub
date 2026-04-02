@@ -18,15 +18,14 @@ background:#0a6b37;
 overflow:hidden;
 }
 
-/* 背景暗転 */
+/* 背景 */
 body::before{
 content:"";
 position:fixed;
 top:0; left:0;
 width:100%; height:100%;
 background:rgba(0,0,0,0.3);
-z-index:0;
-pointer-events: none;
+pointer-events:none;
 }
 
 /* 🎁 */
@@ -34,16 +33,20 @@ pointer-events: none;
 cursor:pointer;
 animation: float 2s infinite;
 z-index:10;
+
 display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
 text-align:center;
+
+will-change: transform;
 }
 
 .tap{
 font-size:1.3em;
 color:white;
+letter-spacing:2px;
 }
 
 .emoji{
@@ -55,21 +58,20 @@ transform: scale(0.9);
 }
 
 @keyframes float {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0); }
+0% { transform: translateY(0); }
+50% { transform: translateY(-10px); }
+100% { transform: translateY(0); }
 }
 
-/* 中央固定ラッパー（重要） */
+/* 中央 */
 .box-wrapper{
 position:absolute;
 top:50%;
 left:50%;
 transform: translate(-50%, -50%);
-z-index:1;
 }
 
-/* ボックス本体 */
+/* ボックス */
 .box{
 background:white;
 width:90vw;
@@ -77,85 +79,69 @@ max-width:700px;
 padding:40px;
 box-sizing:border-box;
 
-/* 額縁 */
-border: 12px solid #8b5a2b;
+border:12px solid #8b5a2b;
 box-shadow:
-  0 0 0 4px #d2b48c inset,
-  0 10px 30px rgba(0,0,0,0.3);
+0 0 0 4px #d2b48c inset,
+0 10px 30px rgba(0,0,0,0.3);
 
-/* 初期状態 */
-transform: scale(0.5);
+transform:scale(0.5);
 opacity:0;
 pointer-events:none;
+
+will-change: transform, opacity;
 }
 
-/* 出現 */
 .box.active{
 animation: pop 0.6s ease-out forwards;
 pointer-events:auto;
 }
 
-/* ポップアウト（中央維持） */
 @keyframes pop {
-  0% {
-    transform: scale(0.5);
-    opacity:0;
-  }
-  70% {
-    transform: scale(1.1);
-    opacity:1;
-  }
-  100% {
-    transform: scale(1);
-    opacity:1;
-  }
+0% { transform: scale(0.5); opacity:0; }
+70% { transform: scale(1.1); opacity:1; }
+100% { transform: scale(1); opacity:1; }
 }
 
-/* 揺れ（wrapperに適用） */
 .box-wrapper.shake{
 animation: shake 0.4s ease-in-out;
 }
 
 @keyframes shake {
-  0% { transform: translate(-50%, -50%) translate(0,0); }
-  20% { transform: translate(-50%, -50%) translate(-4px,2px); }
-  40% { transform: translate(-50%, -50%) translate(4px,-2px); }
-  60% { transform: translate(-50%, -50%) translate(-3px,1px); }
-  80% { transform: translate(-50%, -50%) translate(3px,-1px); }
-  100% { transform: translate(-50%, -50%) translate(0,0); }
+0% { transform: translate(-50%, -50%) translate(0,0); }
+20% { transform: translate(-50%, -50%) translate(-4px,2px); }
+40% { transform: translate(-50%, -50%) translate(4px,-2px); }
+60% { transform: translate(-50%, -50%) translate(-3px,1px); }
+80% { transform: translate(-50%, -50%) translate(3px,-1px); }
+100% { transform: translate(-50%, -50%) translate(0,0); }
 }
 
 /* テキスト */
 h1{
 font-size:2.5em;
-margin:0 0 20px 0;
-text-align: center;
+text-align:center;
+margin-bottom:20px;
 }
 
 p{
 font-size:1.3em;
-margin:10px 0;
-text-align: center;
+text-align:center;
+line-height:1.7;
 }
 
 .small{
 font-size:0.7em;
 color:gray;
-text-align: center;
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- 🎁 -->
 <div id="gift">
   <span class="tap">TAP ME</span>
   <span class="emoji">🎁</span>
 </div>
 
-<!-- 中央固定 -->
 <div class="box-wrapper">
   <div class="box">
 
@@ -165,7 +151,8 @@ text-align: center;
     あなたは農工大の<br>
     美術部を見つけました！<br>
     <a href="https://x.com/nokonokoart" target="_blank">ツイッター（現X）</a><br>
-    <a href="https://www.instagram.com/artclub_tuat/" target="_blank">インスタグラム</a>も<br>チェックしてください！
+    <a href="https://www.instagram.com/artclub_tuat/" target="_blank">インスタグラム</a>も<br>
+    チェックしてください！
     </p>
 
     <p class="small">
@@ -175,46 +162,49 @@ text-align: center;
   </div>
 </div>
 
-<!-- 音 -->
 <audio id="se" src="sound.mp3" preload="auto"></audio>
 
 <script>
+let opened = false;
+
 document.getElementById("gift").addEventListener("click", function(){
 
-  // 🎁消す
+  if(opened) return;
+  opened = true;
+
   this.style.display = "none";
 
   const box = document.querySelector(".box");
   const wrapper = document.querySelector(".box-wrapper");
 
-  // 少し間を作る
   setTimeout(()=>{
     box.classList.add("active");
-    // ←ここで再パース
-    if (window.twemoji) {
-    twemoji.parse(box);
+
+    if(window.twemoji){
+      twemoji.parse(box);
     }
   }, 100);
 
-  // 揺れ
   setTimeout(()=>{
     wrapper.classList.add("shake");
   }, 600);
 
-  // 音
   const audio = document.getElementById("se");
   if(audio){
     audio.currentTime = 0;
     audio.play().catch(()=>{});
   }
 
-  // バイブ
   if(navigator.vibrate){
     navigator.vibrate([100,50,100]);
   }
 
 });
-twemoji.parse(document.body);
+
+/* 初期Twemoji */
+if(window.twemoji){
+  twemoji.parse(document.body);
+}
 </script>
 
 </body>
