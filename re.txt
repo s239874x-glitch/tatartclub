@@ -62,7 +62,8 @@ margin:0;
 }
 
 .gift-emoji{
-font-size:200px;
+ width: 150px;   /* 好きな幅に調整 */
+  height: auto;   /* 縦横比を維持 */
 }
 
 #gift:active{
@@ -162,7 +163,7 @@ vertical-align:middle;
   
 <div id="gift">
   <span class="tap"><strong>TAP ME</strong></span>
-  <span class="gift-emoji">🎁</span>
+<img class="gift-emoji" src="gift.png" alt="🎁">
 </div>
 
 <div class="box-wrapper">
