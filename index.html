@@ -87,16 +87,29 @@ transform:translate(-50%,-50%);
 
 #uiLayer{
   position:fixed;
-  bottom:20px;
-  right:20px;
+  top:20px;     /* ← 上 */
+  right:20px;   /* ← 右 */
   z-index:50; /* ← 最強 */
 
   display:flex;
   flex-direction:column;
+  display:none;
 }
 
 #uiLayer button{
-  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  padding:12px 18px;     /* ← 大きく */
+  font-size:1.1em;       /* ← 見やすく */
+  border-radius:12px;
+
+  background:#c0392b;
+  color:white;
+  border:none;
+
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+}
+
+#uiLayer button:active{
+  transform:scale(0.95);
 }
 
 /* ボックス */
@@ -178,7 +191,7 @@ cursor:pointer;
 <p>
 あなたは農工大の<br>
 <strong><span style="color:#c0392b;">美術部</span></strong>を見つけました！<br>
-<a href="https://x.com/nokonokoart" target="_blank">ツイッター（現X）</a><br>
+<a href="https://x.com/nokoart_active" target="_blank">ツイッター（現X）</a><br>
 <a href="https://www.instagram.com/artclub_tuat/" target="_blank">インスタグラム</a>も<br>
 チェックしてください！
 </p>
@@ -204,6 +217,7 @@ let opened=false;
 
 const gift = document.getElementById("gift");
 const box = document.querySelector(".box");
+const uiLayer = document.getElementById("uiLayer");
 
 gift.onclick = ()=>{
 if(opened) return;
@@ -211,6 +225,7 @@ opened=true;
 
 gift.style.display="none";
 box.classList.add("active");
+uiLayer.style.display="flex";
 
 explodeConfetti();
 };
@@ -289,6 +304,10 @@ drawBtn.onclick=()=>{
     drawCanvas.style.zIndex="20";  // ← 元に戻す
     drawBtn.textContent="✏️ OFF";
   }
+};
+
+clearBtn.onclick = ()=>{
+  drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 };
 
 /* PC */
