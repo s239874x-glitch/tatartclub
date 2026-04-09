@@ -268,6 +268,12 @@ shareBtn.onclick = async () => {
 
   // 背景を描画
   ctx.drawImage(screenshot, 0, 0);
+  ctx.fillStyle = "white";
+  ctx.font = "bold 40px sans-serif";
+  ctx.textAlign = "center";
+
+  ctx.fillText("農工大美術部を見つけた！", finalCanvas.width/2, 60);
+  ctx.fillText("#農工大美術部", finalCanvas.width/2, finalCanvas.height - 40);
 
   // 描画キャンバスをスケーリングして合成
   ctx.drawImage(
