@@ -243,43 +243,23 @@ explodeConfetti();
 /* ========= 共有 ========= */
 const shareBtn = document.getElementById("shareBtn");
 
-shareBtn.onclick = async () => {
+shareBtn.onclick = async ()=>{
 
-  // 1. ボタンだけ一瞬非表示（写り込み防止）
+  // ボタン一瞬隠す（写り込み防止）
   shareBtn.style.display = "none";
 
-  // 2. 描画キャンバスを一時的に DOM に追加して html2canvas に含める
-  const tempCanvas = document.createElement("canvas");
-  tempCanvas.width = drawCanvas.width;
-  tempCanvas.height = drawCanvas.height;
-  const tempCtx = tempCanvas.getContext("2d");
-  tempCtx.drawImage(drawCanvas, 0, 0); // drawCanvas の内容をコピー
-  tempCanvas.style.position = "fixed";
-  tempCanvas.style.top = "0";
-  tempCanvas.style.left = "0";
-  tempCanvas.style.zIndex = "100"; // 上に重ねる
-  tempCanvas.style.pointerEvents = "none";
-  document.body.appendChild(tempCanvas);
-
-  // 3. html2canvas でキャプチャ
-  const canvas = await html2canvas(document.body, {
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: null,
-    scale: 2
-  });
-
+  const canvas = await html2canvas(document.body);
   const img = canvas.toDataURL("image/png");
 
-  // 4. 保存
+  // 保存
   const link = document.createElement("a");
   link.href = img;
   link.download = "art.png";
   link.click();
 
-  // 5. 元に戻す
+  // ボタン戻す
   shareBtn.style.display = "inline-block";
-  document.body.removeChild(tempCanvas);
+};
 
   // 6. Twitter へ
   const text = encodeURIComponent(
