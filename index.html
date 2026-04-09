@@ -99,8 +99,8 @@ transform:translate(-50%,-50%);
 }
 
 #uiLayer button{
-  padding:12px 18px;     /* ← 大きく */
-  font-size:1.1em;       /* ← 見やすく */
+  padding:10px 15px;     /* ← 大きく */
+  font-size:1.0em;       /* ← 見やすく */
   border-radius:12px;
 
   background:#c0392b;
@@ -243,14 +243,16 @@ explodeConfetti();
 
 /* ========= 共有 ========= */
 const shareBtn = document.getElementById("shareBtn");
+const uiLayer = document.getElementById("uiLayer");
 
 shareBtn.onclick = async ()=>{
 
-  // ボタン一瞬隠す（写り込み防止）
-  shareBtn.style.display = "none";
-  drawBtn.style.display = "none";
-  clearBtn.style.display = "none";
-  
+  // UIまとめて非表示
+  uiLayer.style.display = "none";
+
+  // 少し待つ（←超重要：描画反映待ち）
+  await new Promise(r => setTimeout(r, 100));
+
   const canvas = await html2canvas(document.body);
 
   const img = canvas.toDataURL("image/png");
@@ -261,10 +263,9 @@ shareBtn.onclick = async ()=>{
   link.download = "art.png";
   link.click();
 
-  // ボタン戻す
-  shareBtn.style.display = "inline-block";
-  clearBtn.style.display = "inline-block";
-  drawBtn.style.display = "inline-block";
+  // UI戻す
+  uiLayer.style.display = "flex";
+
   // Twitterへ
   const text = encodeURIComponent(
     "農工大美術部見つけた！🎨\n（保存した画像も一緒に投稿してね！）\n#農工大美術部\n"
