@@ -137,11 +137,6 @@ animation: pop 0.6s ease-out forwards;
 pointer-events:auto;
 }
 
-.no-anim *{
-  animation: none !important;
-  transition: none !important;
-}
-
 @keyframes pop {
 0% { transform: scale(0.5); opacity:0; }
 70% { transform: scale(1.1); opacity:1; }
@@ -254,10 +249,8 @@ shareBtn.onclick = async ()=>{
   // UIまとめて非表示
   uiLayer.style.display = "none";
 
-   // 👇 アニメーション停止
-  document.body.classList.add("no-anim");
-
-  // 👇 1フレーム待つ
+  // 描画安定待ち（これだけでOK）
+  await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => requestAnimationFrame(r));
 
   const canvas = await html2canvas(document.body);
