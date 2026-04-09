@@ -249,10 +249,12 @@ shareBtn.onclick = async ()=>{
   shareBtn.style.display = "none";
   
   // ⭐キャンバスを一時的に消す
-  drawCanvas.style.display = "none";
   confettiCanvas.style.display = "none";
   
-  const canvas = await html2canvas(document.body);
+  const canvas = await html2canvas(document.body{
+    useCORS:true,
+    backgroundColor:null
+  });
   const img = canvas.toDataURL("image/png");
 
   const link = document.createElement("a");
@@ -261,7 +263,6 @@ shareBtn.onclick = async ()=>{
   link.click();
 
   // ⭐元に戻す
-  drawCanvas.style.display = "block";
   confettiCanvas.style.display = "block";
   shareBtn.style.display = "inline-block";
 
