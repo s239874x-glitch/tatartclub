@@ -45,15 +45,26 @@ gap:5px;
 }
 /*紙吹雪ブロック*/
 #confetti{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:20;
-touch-action: none;
-/* ★最初は完全に無効 */
-pointer-events:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:15;
+
+  pointer-events:none; /* ←ずっと無効でOK */
+}
+
+#drawCanvas{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:20;
+
+  pointer-events:none; /* ←通常は無効 */
+  touch-action:none;
 }
 
 /* テキスト選択無効化 */
@@ -183,7 +194,8 @@ vertical-align:middle;
 
 <body>
 
-<canvas id="confetti"></canvas> 
+<canvas id="confetti"></canvas>
+<canvas id="drawCanvas"></canvas>
   
 <div id="gift">
   <span class="tap"><strong>TAP ME</strong></span>
@@ -270,11 +282,17 @@ document.getElementById("gift").addEventListener("click", function(){
 
 /* ===== Canvas ===== */
 
-const canvas = document.getElementById("confetti");
-const ctx = canvas.getContext("2d");
+const confettiCanvas = document.getElementById("confetti");
+const confettiCtx = confettiCanvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const drawCanvas = document.getElementById("drawCanvas");
+const drawCtx = drawCanvas.getContext("2d");
+
+confettiCanvas.width = window.innerWidth;
+confettiCanvas.height = window.innerHeight;
+
+drawCanvas.width = window.innerWidth;
+drawCanvas.height = window.innerHeight;
 
 let particles = [];
 let drawMode = false;
@@ -304,10 +322,11 @@ function explodeConfetti(){
 }
 
 function updateConfetti(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
 
   for(let i = particles.length - 1; i >= 0; i--){
     const p = particles[i];
+
     p.x += p.vx;
     p.y += p.vy;
     p.vy += 0.1;
@@ -315,8 +334,8 @@ function updateConfetti(){
     p.vy *= 0.99;
     p.life--;
 
-    ctx.fillStyle = p.color;
-    ctx.fillRect(p.x, p.y, p.size, p.size);
+    confettiCtx.fillStyle = p.color;
+    confettiCtx.fillRect(p.x, p.y, p.size, p.size);
 
     if(p.life <= 0){
       particles.splice(i,1);
@@ -342,29 +361,29 @@ drawBtn.addEventListener("click", ()=>{
 
   if(drawEnabled){
     drawBtn.textContent = "✏️ 描くモード ON";
-    canvas.style.pointerEvents = "auto";
+    drawCanvas.style.pointerEvents = "auto";
   }else{
     drawBtn.textContent = "✏️ 描くモード OFF";
-    canvas.style.pointerEvents = "none";
+    drawCanvas.style.pointerEvents = "none";
   }
 });
 
 /* ===== クリア ===== */
 
 clearBtn.addEventListener("click", ()=>{
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
 });
 
 /* ===== PC ===== */
 
-canvas.addEventListener("mousedown", (e)=>{
+drawCanvas.addEventListener("mousedown", (e)=>{
   if(!drawEnabled) return;
 
   drawing = true;
 
-  const rect = canvas.getBoundingClientRect();
-  ctx.beginPath();
-  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+  const rect = drawCanvas.getBoundingClientRect();
+  drawCtx.beginPath();
+  drawCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
 });
 
 canvas.addEventListener("mousemove", (e)=>{
@@ -387,19 +406,16 @@ canvas.addEventListener("mouseleave", ()=> drawing = false);
 
 /* ===== スマホ ===== */
 
-canvas.addEventListener("touchstart", (e)=>{
+drawCanvas.addEventListener("mousedown", (e)=>{
   if(!drawEnabled) return;
-
-  e.preventDefault();
 
   drawing = true;
 
-  const rect = canvas.getBoundingClientRect();
-  const t = e.touches[0];
-
-  ctx.beginPath();
-  ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top);
-
+  const rect = drawCanvas.getBoundingClientRect();
+  drawCtx.beginPath();
+  drawCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+});
+  
 }, { passive:false });
 
 canvas.addEventListener("touchmove", (e)=>{
