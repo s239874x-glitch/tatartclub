@@ -282,6 +282,18 @@ drawCtx.beginPath();
 drawCtx.moveTo(e.clientX-rect.left,e.clientY-rect.top);
 };
 
+drawCanvas.addEventListener("click", (e)=>{
+  if(!drawEnabled) return;
+
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+
+  // 自分自身(canvas)なら無視
+  if(el === drawCanvas) return;
+
+  // 下の要素にクリックを渡す
+  el.click();
+});
+
 drawCanvas.onmousemove=(e)=>{
 if(!drawing)return;
 
@@ -310,6 +322,17 @@ const t=e.touches[0];
 drawCtx.beginPath();
 drawCtx.moveTo(t.clientX-rect.left,t.clientY-rect.top);
 };
+
+drawCanvas.addEventListener("touchend", (e)=>{
+  if(!drawEnabled) return;
+
+  const touch = e.changedTouches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+
+  if(el === drawCanvas) return;
+
+  if(el) el.click();
+});
 
 drawCanvas.ontouchmove=(e)=>{
 if(!drawing)return;
