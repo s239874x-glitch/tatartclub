@@ -51,10 +51,9 @@ left:0;
 width:100%;
 height:100%;
 z-index:20;
-
-/* 通常はクリック透過 */
-pointer-events:none;
 touch-action: none;
+/* ★スマホでは常に有効 */
+pointer-events:auto;
 }
 
 /* テキスト選択無効化 */
@@ -371,46 +370,65 @@ canvas.addEventListener("mouseleave", ()=>{
 
 /* ===== スマホ ===== */
 
+let touchStartX = 0;
+let touchStartY = 0;
+let moved = false;
+
 canvas.addEventListener("touchstart", (e)=>{
   if(!drawMode) return;
 
-  e.preventDefault();
-
-  drawing = true;
-  canvas.style.pointerEvents = "auto";
-
   const rect = canvas.getBoundingClientRect();
   const t = e.touches[0];
+
+  touchStartX = t.clientX;
+  touchStartY = t.clientY;
+  moved = false;
 
   ctx.beginPath();
   ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top);
 
+  drawing = true;
+
 }, { passive: false });
+
 
 canvas.addEventListener("touchmove", (e)=>{
   if(!drawing) return;
 
-  e.preventDefault();
-
   const rect = canvas.getBoundingClientRect();
   const t = e.touches[0];
 
-  ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top);
+  // 少しでも動いたら「描画モード」
+  if(Math.abs(t.clientX - touchStartX) > 5 || Math.abs(t.clientY - touchStartY) > 5){
+    moved = true;
+  }
 
-  // 🌈 レインボー
-  ctx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
-  hue += 2;
-  if(hue > 360) hue = 0;
+  if(moved){
+    e.preventDefault(); // ←描画時だけスクロール防止
 
-  ctx.lineWidth = 2 + Math.sin(hue * 0.1) * 2;
-  ctx.lineCap = "round";
-  ctx.stroke();
+    ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top);
 
-}, { passive: false });
+    ctx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
+    hue += 2;
+    if(hue > 360) hue = 0;
 
-canvas.addEventListener("touchend", ()=>{
+    ctx.lineWidth = 2 + Math.sin(hue * 0.1) * 2;
+    ctx.lineCap = "round";
+    ctx.stroke();
+  }
+
+  }, { passive: false });
+
+
+  canvas.addEventListener("touchend", (e)=>{
   drawing = false;
-  canvas.style.pointerEvents = "none";
+
+  // 動いてなければ「ただのタップ」→下の要素にクリックを通す
+  if(!moved){
+    const touch = e.changedTouches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if(el) el.click();
+  }
 });
 </script>
 
