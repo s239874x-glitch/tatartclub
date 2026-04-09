@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+<audio id="se" src="sound.mp3" preload="auto"></audio>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
@@ -207,10 +209,13 @@ cursor:pointer;
 <div id="uiLayer">
   <button id="drawToggle">✏️ 描画できます！</button>
   <button id="clearBtn">🧹クリア</button>
+  <button id="shareBtn">📸 保存して共有</button>
 </div>
 
 
 <script>
+/* ========= 音 ========= */
+const audio = document.getElementById("se");
 
 /* ========= プレゼント ========= */
 let opened=false;
@@ -226,10 +231,49 @@ opened=true;
 gift.style.display="none";
 box.classList.add("active");
 uiLayer.style.display="flex";
+// 🔊 音再生
+  if(audio){
+    audio.currentTime = 0;
+    audio.volume = 0.7;
+    audio.play().catch(()=>{});
+  }
 
 explodeConfetti();
 };
 
+/* ========= 共有 ========= */
+const shareBtn = document.getElementById("shareBtn");
+
+shareBtn.onclick = async ()=>{
+
+  // ボタン一瞬隠す（写り込み防止）
+  shareBtn.style.display = "none";
+
+  const canvas = await html2canvas(document.body);
+
+  const img = canvas.toDataURL("image/png");
+
+  // 保存
+  const link = document.createElement("a");
+  link.href = img;
+  link.download = "art.png";
+  link.click();
+
+  // ボタン戻す
+  shareBtn.style.display = "inline-block";
+
+  // Twitterへ
+  const text = encodeURIComponent(
+    "農工大美術部見つけた！🎨\n（画像も一緒に投稿してね！）\n#農工大美術部"
+  );
+
+  const url = encodeURIComponent("https://x.com/nokonokoart");
+
+  window.open(
+    `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+    "_blank"
+  );
+};
 /* ========= Canvas ========= */
 const confettiCanvas=document.getElementById("confetti");
 const confettiCtx=confettiCanvas.getContext("2d");
@@ -393,6 +437,40 @@ drawCanvas.ontouchend=(e)=>{
 };
 
 drawCanvas.ontouchend=()=>drawing=false;
+
+/* ========= 共有 ========= */
+const shareBtn = document.getElementById("shareBtn");
+
+shareBtn.onclick = async ()=>{
+
+  // ボタン一瞬隠す（写り込み防止）
+  shareBtn.style.display = "none";
+
+  const canvas = await html2canvas(document.body);
+
+  const img = canvas.toDataURL("image/png");
+
+  // 保存
+  const link = document.createElement("a");
+  link.href = img;
+  link.download = "art.png";
+  link.click();
+
+  // ボタン戻す
+  shareBtn.style.display = "inline-block";
+
+  // Twitterへ
+  const text = encodeURIComponent(
+    "農工大美術部見つけた！🎨\n（画像も一緒に投稿してね！）\n#農工大美術部"
+  );
+
+  const url = encodeURIComponent("https://x.com/nokoart_active");
+
+  window.open(
+    `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+    "_blank"
+  );
+};
 
 </script>
 </body>
