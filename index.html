@@ -250,6 +250,7 @@ shareBtn.onclick = async () => {
   
   shareBtn.style.display = "none";
   confettiCanvas.style.display = "none";
+  await new Promise(r => setTimeout(r, 50));
 
   // html2canvas の scale を 1 に
   const screenshot = await html2canvas(document.body, {
