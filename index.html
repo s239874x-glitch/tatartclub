@@ -277,6 +277,7 @@ shareBtn.onclick = async () => {
  );
 
   /*落書きタイトル*/
+document.fonts.ready.then(() => {
  ctx.fillStyle = "red";
  ctx.font = "bold 60px 'Rubik Glitch'";
  ctx.textAlign = "center";
@@ -286,7 +287,8 @@ shareBtn.onclick = async () => {
  ctx.shadowOffsetX = 3;
  ctx.shadowOffsetY = 3;
 
- ctx.fillText('"MASTERPIECE"', finalCanvas.width / 2, 60);
+ ctx.fillText('"MASTERPIECE"', finalCanvas.width / 2, 80);
+});
 
   const img = finalCanvas.toDataURL("image/png");
 
