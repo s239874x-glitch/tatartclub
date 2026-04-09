@@ -216,7 +216,6 @@ vertical-align:middle;
 let opened = false;
 
 document.getElementById("gift").addEventListener("click", function(){
-
   if(opened) return;
   opened = true;
 
@@ -231,10 +230,10 @@ document.getElementById("gift").addEventListener("click", function(){
     if(window.twemoji){
       twemoji.parse(box);
     }
-    explodeConfetti();
-    updateConfetti();
 
-    // 3秒後に描画可能
+    explodeConfetti();
+
+    // 3秒後に描画OK
     setTimeout(()=>{
       drawMode = true;
     }, 3000);
@@ -251,7 +250,6 @@ document.getElementById("gift").addEventListener("click", function(){
     audio.volume = 0.6;
     audio.play().catch(()=>{});
   }
-
 });
 
 /* ===== Canvas ===== */
@@ -265,7 +263,6 @@ canvas.height = window.innerHeight;
 let particles = [];
 let drawMode = false;
 let drawing = false;
-let enableDraw = false;
 let hue = 0;
 
 /* ===== 紙吹雪 ===== */
@@ -288,6 +285,7 @@ function explodeConfetti(){
       life: 150
     });
   }
+
   requestAnimationFrame(updateConfetti);
 }
 
@@ -316,27 +314,30 @@ function updateConfetti(){
   }
 }
 
-/* ===== 描画制御 ===== */
+/* ===== 描画 ===== */
 
-// Shiftキー押してる間だけ描画モードON
+// PC：Shift押してるときだけ描画
+let shiftPressed = false;
+
 document.addEventListener("keydown", (e)=>{
   if(e.key === "Shift"){
-    enableDraw = true;
+    shiftPressed = true;
     canvas.style.pointerEvents = "auto";
   }
 });
 
 document.addEventListener("keyup", (e)=>{
   if(e.key === "Shift"){
-    enableDraw = false;
+    shiftPressed = false;
     canvas.style.pointerEvents = "none";
   }
 });
 
-/* ===== マウス描画 ===== */
+/* ===== マウス ===== */
 
 canvas.addEventListener("mousedown", (e)=>{
-  if(!drawMode || !enableDraw) return;
+  if(!drawMode || !shiftPressed) return;
+
   drawing = true;
 
   const rect = canvas.getBoundingClientRect();
@@ -345,10 +346,9 @@ canvas.addEventListener("mousedown", (e)=>{
 });
 
 canvas.addEventListener("mousemove", (e)=>{
-  if(!drawing || !drawMode) return;
-　e.preventDefault(); // ←これも重要
+  if(!drawing) return;
+
   const rect = canvas.getBoundingClientRect();
-  const t = e.touches[0];
   ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
 
   // 🌈 レインボー
@@ -369,7 +369,7 @@ canvas.addEventListener("mouseleave", ()=>{
   drawing = false;
 });
 
-/* ===== スマホ（長押しで描画） ===== */
+/* ===== スマホ ===== */
 
 canvas.addEventListener("touchstart", (e)=>{
   if(!drawMode) return;
@@ -387,7 +387,6 @@ canvas.addEventListener("touchstart", (e)=>{
 
 }, { passive: false });
 
-
 canvas.addEventListener("touchmove", (e)=>{
   if(!drawing) return;
 
@@ -403,36 +402,14 @@ canvas.addEventListener("touchmove", (e)=>{
   hue += 2;
   if(hue > 360) hue = 0;
 
-  ctx.lineWidth = 2 + Math.sin(hue * 0.1) * 2;;
+  ctx.lineWidth = 2 + Math.sin(hue * 0.1) * 2;
   ctx.lineCap = "round";
   ctx.stroke();
 
 }, { passive: false });
 
-
 canvas.addEventListener("touchend", ()=>{
   drawing = false;
-
-  // 通常操作に戻す
-  canvas.style.pointerEvents = "none";
-});
-canvas.addEventListener("touchmove", (e)=>{
-  if(!drawing || !enableDraw) return;
-
-  const rect = canvas.getBoundingClientRect();
-  const t = e.touches[0];
-
-  ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top);
-  ctx.strokeStyle = "white";
-  ctx.lineWidth = 3;
-  ctx.lineCap = "round";
-  ctx.stroke();
-});
-
-canvas.addEventListener("touchend", ()=>{
-  clearTimeout(touchTimer);
-  drawing = false;
-  enableDraw = false;
   canvas.style.pointerEvents = "none";
 });
 </script>
