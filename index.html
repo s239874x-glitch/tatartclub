@@ -245,28 +245,23 @@ const shareBtn = document.getElementById("shareBtn");
 
 shareBtn.onclick = async ()=>{
 
-  // ボタン一瞬隠す（写り込み防止）
   shareBtn.style.display = "none";
 
   const canvas = await html2canvas(document.body);
   const img = canvas.toDataURL("image/png");
 
-  // 保存
   const link = document.createElement("a");
   link.href = img;
   link.download = "art.png";
   link.click();
 
-  // ボタン戻す
   shareBtn.style.display = "inline-block";
-};
 
-  // 6. Twitter へ
+  // Twitter 共有はここだけ
   const text = encodeURIComponent(
     "農工大美術部見つけた！🎨\n（画像も一緒に投稿してね！）\n#農工大美術部"
   );
-
-  const url = encodeURIComponent(" https://x.com/nokoart_active");
+  const url = encodeURIComponent("https://x.com/nokoart_active");
 
   window.open(
     `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
@@ -426,16 +421,12 @@ drawCanvas.ontouchmove=(e)=>{
 
 drawCanvas.ontouchend=(e)=>{
   drawing=false;
-
-  // ★ここが重要
-  if(!moved){
+  if(!moved && e.changedTouches){
     const touch=e.changedTouches[0];
     const el=document.elementFromPoint(touch.clientX,touch.clientY);
     if(el && el!==drawCanvas) el.click();
   }
 };
-
-drawCanvas.ontouchend=()=>drawing=false;
 
 </script>
 </body>
