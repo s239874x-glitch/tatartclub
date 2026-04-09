@@ -54,6 +54,14 @@ z-index:20;
 
 /* 通常はクリック透過 */
 pointer-events:none;
+touch-action: none;
+}
+
+/* テキスト選択無効化 */
+body, canvas {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
   
 .tap{
@@ -337,8 +345,9 @@ canvas.addEventListener("mousedown", (e)=>{
 
 canvas.addEventListener("mousemove", (e)=>{
   if(!drawing || !drawMode) return;
-
+　e.preventDefault(); // ←これも重要
   const rect = canvas.getBoundingClientRect();
+  const t = e.touches[0];
   ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
 
   ctx.strokeStyle = "white";
@@ -360,6 +369,7 @@ canvas.addEventListener("mouseleave", ()=>{
 let touchTimer;
 
 canvas.addEventListener("touchstart", (e)=>{
+  e.preventDefault(); // ←これ重要
   if(!drawMode) return;
 
   touchTimer = setTimeout(()=>{
