@@ -248,41 +248,25 @@ shareBtn.onclick = async ()=>{
   // UIまとめて非表示
   uiLayer.style.display = "none";
 
-  // ボックスのスタイルを固定して薄くならないようにする
+// ボックスのスタイルを固定して薄くならないようにする
   box.style.transition = "none";
   box.style.opacity = "1";
   box.style.transform = "scale(1)";
 
-  // アニメーション終了を待つ（アニメーションがなければ即時）
-  const waitAnimation = new Promise(resolve => {
-    if (box.getAnimations && box.getAnimations().length > 0) {
-      const anims = box.getAnimations();
-      let finished = 0;
-      anims.forEach(anim=>{
-        anim.onfinish = ()=>{
-          finished++;
-          if(finished===anims.length) resolve();
-        };
-      });
-    } else {
-      // アニメーションなしなら数フレーム待つ
-      requestAnimationFrame(()=>requestAnimationFrame(resolve));
-    }
-  });
+  // アニメーション終了を待つ代わりに 200ms 待機
+  await new Promise(r => setTimeout(r, 200));
 
-  await waitAnimation;
-
-  // 描画完了待ち（重要：2→5フレームに増やす）
+  // さらに描画完了待ち
   for(let i=0;i<5;i++){
     await new Promise(r => requestAnimationFrame(r));
   }
 
   const canvas = await html2canvas(document.body, {
-    useCORS: true,          // ★これ必須
+    useCORS: true,
     allowTaint: true,
-    backgroundColor: null,  // 透過保持
+    backgroundColor: null,
     logging: false,
-    scale: 2                // 高解像度
+    scale: 2
   });
   const img = canvas.toDataURL("image/png");
 
