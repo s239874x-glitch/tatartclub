@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Glitch&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -275,12 +276,17 @@ shareBtn.onclick = async () => {
   0,0,finalCanvas.width,finalCanvas.height
  );
 
- ctx.fillStyle = "white";
- ctx.font = "bold 40px sans-serif";
+  /*落書きタイトル*/
+ ctx.fillStyle = "red";
+ ctx.font = "bold 60px 'Rubik Glitch'";
  ctx.textAlign = "center";
 
- ctx.fillText("農工大美術部！", finalCanvas.width/2, 60);
- ctx.fillText("農工大美術部！", finalCanvas.width/2, finalCanvas.height - 40);
+ ctx.shadowColor = "black";
+ ctx.shadowBlur = 15;
+ ctx.shadowOffsetX = 3;
+ ctx.shadowOffsetY = 3;
+
+ ctx.fillText('"MASTERPIECE"', finalCanvas.width / 2, 60);
 
   const img = finalCanvas.toDataURL("image/png");
 
