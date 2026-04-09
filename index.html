@@ -277,18 +277,14 @@ shareBtn.onclick = async () => {
  );
 
   /*落書きタイトル*/
-document.fonts.ready.then(() => {
+await document.fonts.ready;
  ctx.fillStyle = "red";
  ctx.font = "bold 60px 'Rubik Glitch'";
  ctx.textAlign = "center";
 
  ctx.shadowColor = "black";
  ctx.shadowBlur = 15;
- ctx.shadowOffsetX = 3;
- ctx.shadowOffsetY = 3;
-
  ctx.fillText('"MASTERPIECE"', finalCanvas.width / 2, 80);
-});
 
   const img = finalCanvas.toDataURL("image/png");
 
