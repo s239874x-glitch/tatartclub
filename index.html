@@ -317,9 +317,12 @@ shareBtn.onclick = async () => {
   const text = encodeURIComponent(
     "農工大美術部見つけた！🎨\n（保存したらくがきも一緒に投稿してみよう！）\n#農工大美術部\n"
   );
-  const url1 = encodeURIComponent("https://x.com/nokoart_active\n");
-  const url2 = encodeURIComponent("https://s239874x-glitch.github.io/");
-  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+  
+  const url = encodeURIComponent(
+  "https://s239874x-glitch.github.io/\nhttps://x.com/nokoart_active"
+ );
+
+ window.location.href = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
 };
 /* ========= Canvas ========= */
 const confettiCanvas = document.getElementById("confetti");
