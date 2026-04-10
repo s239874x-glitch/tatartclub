@@ -244,8 +244,11 @@ shareBtn.onclick = async () => {
   
   const boxEl = document.querySelector(".box");
   const prevTransform = boxEl.style.transform;
+  const prevAnimation = boxEl.style.animation;
   
   boxEl.style.transform = "none";
+  boxEl.style.animation = "none";
+　boxEl.style.opacity = "1";
   
   shareBtn.style.display = "none";
   confettiCanvas.style.display = "none";
@@ -308,6 +311,7 @@ shareBtn.onclick = async () => {
   shareBtn.style.display = "inline-block";
   
   boxEl.style.transform = prevTransform;
+  boxEl.style.animation = prevAnimation;
   
   // Twitter 共有
   const text = encodeURIComponent(
